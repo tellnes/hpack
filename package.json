@@ -1,0 +1,26 @@
+{
+  "name": "hpack",
+  "version": "0.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "author": "Christian Tellnes <christian@tellnes.no> (http://christian.tellnes.com/)",
+  "license": "MIT",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {},
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tellnes/hpack.git"
+  },
+  "bugs": {
+    "url": "https://github.com/tellnes/hpack/issues"
+  },
+  "homepage": "https://github.com/tellnes/hpack",
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  }
+}
