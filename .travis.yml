@@ -1,5 +1,15 @@
 language: node_js
+
 node_js:
   - "iojs"
   - "iojs-v1.5.1"
 
+before_install:
+ - "npm install istanbul -g"
+ - "npm install coveralls -g"
+
+
+script: "make test cover"
+
+after_success:
+  - "cat coverage/lcov.info | coveralls"
