@@ -201,7 +201,7 @@ decoder.write(new Buffer(0))
 assertTables()
 
 
-// // decoder write chunked
+// decoder write chunked
 
 encoder.setMaxTableSize(0)
 encoder.setMaxTableSize(1024)
@@ -217,3 +217,64 @@ assert(headers, [ 'foo', 'baz', 1, 'bar', 'baz', 1 ])
 headers.length = 0
 
 assertTables()
+
+
+// decoder huffman error
+
+assert.throws(function() {
+  const de = new Decoder()
+
+  // 0x40 literal incremental indexing
+  // 0    name not index
+
+  // 0x80 huffman encoded
+  // 1    strlen
+
+  // 0x88 huffman table '_': 100010 + 00
+  de.write(new Buffer([ 0x40 | 0, 0x80 | 4, 0xff, 0xff, 0xff, 0xff ]))
+})
+
+// decoder huffman not accepted error
+
+assert.throws(function() {
+  // This is decoding error because the last bit is padded with zeros
+
+  const de = new Decoder()
+  // 0x40 literal incremental indexing
+  // 0    name not index
+
+  // 0x80 huffman encoded
+  // 1    strlen
+
+  // 0x88 huffman table '_': 100010 + 00
+  de.write(new Buffer([ 0x40 | 0, 0x80 | 1, 0x88 ]))
+})
+
+
+// Decoder.huffmanSpeed
+
+buf = new Buffer('9cb450753c1eca24', 'hex')
+exp = Array.prototype.slice.call(new Buffer('hello world'))
+
+for (var i = 1; i <= 4; i++) {
+  Decoder.huffmanSpeed = i
+  assert.equal(Decoder.huffmanSpeed, i)
+  var de = new Decoder()
+  de.huffde.decode(buf, 0, buf.length)
+  assert.deepEqual(de.huffde.data, exp)
+}
+
+// Decoder.huffmanSpeed invalid values
+
+assert.throws(function() {
+  Decoder.huffmanSpeed = 0
+})
+assert.throws(function() {
+  Decoder.huffmanSpeed = 5
+})
+assert.throws(function() {
+  Decoder.huffmanSpeed = 3.5
+})
+assert.throws(function() {
+  Decoder.huffmanSpeed = '2'
+})
