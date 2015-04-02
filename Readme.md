@@ -42,6 +42,58 @@ The huffman decoding algorithm is based on
 [Fast Prefix Code Processing](http://graphics.ics.uci.edu/pub/Prefix.pdf).
 
 
+## Class: hpack.Decoder(options)
+
+Decoder is a writable stream. You write incoming buffers and it will emit
+`header` events.
+
+
+### Options
+
+#### `maxTableSize` (default `4096`)
+
+Initial maximum table size. Determine the maximum size that the encoder is using for
+the dynamic table.  In HTTP/2, this value is determined by the
+SETTINGS_HEADER_TABLE_SIZE setting
+(see [Section 6.5.2 of HTTP2](https://tools.ietf.org/html/draft-ietf-httpbis-http2-17#section-6.5.2)).
+
+See [Section 4.2](https://tools.ietf.org/html/draft-ietf-httpbis-header-compression-12#section-4.2)
+in the specification for details.
+
+
+### decoder.setMaxTableSize(size)
+
+Changes the maximum table size. See `maxTableSize` option above for details.
+
+
+### decoder.write(buf)
+
+
+
+### Event: 'header'
+
+```js
+function(name, value, representation) { }
+```
+
+- `name`: Header field name.
+- `value`: Header field value.
+- `representation`: How the field was represented. Usefull if you are acting as
+  a intermediary.
+
+
+### Decoder Representation Constants
+
+See
+[Section 6](https://tools.ietf.org/html/draft-ietf-httpbis-header-compression-12#section-6)
+in the specification details.
+
+- `Decoder.REP_INDEXED`: Indexed Header Field Representation.
+- `Decoder.REP_INCREMENTAL_INDEXING`: Literal Header Field with Incremental Indexing.
+- `Decoder.REP_WITHOUT_INDEXING`: Literal Header Field without Indexing.
+- `Decoder.REP_NEVER_INDEXED`: Literal Header Field never Indexed.
+
+
 ## License
 
 MIT
