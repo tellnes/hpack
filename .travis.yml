@@ -8,8 +8,7 @@ before_install:
  - "npm install istanbul -g"
  - "npm install coveralls -g"
 
-
 script: "make test cover"
 
 after_success:
-  - "cat coverage/lcov.info | coveralls"
+  - "make submit-to-coveralls"
