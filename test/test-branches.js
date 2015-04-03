@@ -46,7 +46,11 @@ assertTables()
 
 encoder.set('empty', '')
 buf = encoder.read()
-exp = new Buffer([ 0x40, 0x84, 0x2d, 0x35, 0xa7, 0xd7, 0x80 ])
+exp = new Buffer([ 0x40 // literal incremental indexing
+                 , 0x84 // 0x80 = huffman encoded, 0x4 = string length
+                 , 0x2d , 0x35 , 0xa7 , 0xd7
+                 , 0x00 // empty string, not hufman encoded
+                 ])
 assert.deepEqual(buf, exp)
 
 decoder.write(buf)
@@ -278,3 +282,19 @@ assert.throws(function() {
 assert.throws(function() {
   Decoder.huffmanSpeed = '2'
 })
+
+
+// Huffman all codes
+
+buf = new Buffer(255)
+for (var i = 0; i < 255; i++) {
+  buf[i] = i
+}
+
+encoder.set('everything', buf.toString('binary'), { huffman: true })
+decoder.write(encoder.read())
+
+assert.equal(headers[0], 'everything')
+assert.deepEqual(new Buffer(headers[1], 'ascii'), buf)
+assert.equal(headers[2], Decoder.REP_INCREMENTAL_INDEXING)
+headers.length = 0
